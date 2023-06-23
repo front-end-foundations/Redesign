@@ -1,15 +1,25 @@
+import { setWithExpiry, getWithExpiry } from "./modules/localStorageHelpers.js";
+
 // store the link plus the API key in a variable
 const key = "pb3WbIQux4hi9ZGGD38jXNA1K5gjBt6j";
 const API = `https://api.nytimes.com/svc/topstories/v2/nyregion.json?api-key=${key}`;
+const storagePrefix = "nyt-autosave";
 
 function getStories() {
-  fetch(API)
-    .then((response) => response.json())
-    .then((data) => showData(data.results));
+  const stories = getWithExpiry(storagePrefix);
+  if (!stories) {
+    console.warn(" stories expired - fetching again ");
+    fetch(API)
+      .then((response) => response.json())
+      .then((data) => showData(data.results));
+  } else {
+    console.warn(" stories not expired - no fetching ");
+    document.querySelector(".stories").innerHTML = stories;
+  }
 }
 
 function showData(stories) {
-  var looped = stories
+  const looped = stories
     .map(
       (story) => `
     <div class="item">
@@ -27,8 +37,49 @@ function showData(stories) {
     .join("");
 
   document.querySelector(".stories").innerHTML = looped;
+  setWithExpiry(storagePrefix, looped, 1000 * 60 * 60);
 }
 
 if (document.querySelector(".home")) {
   getStories();
+}
+
+//  ====
+
+document.addEventListener("click", clickHandlers);
+
+function clickHandlers(event) {
+  if (event.target.matches("#pull")) {
+    showMenu(event);
+    event.preventDefault();
+  }
+  if (event.target.matches(".content-video a")) {
+    videoSwitch(event);
+    event.preventDefault();
+  }
+  if (event.target.matches(".image-tn img")) {
+    runCarousel(event);
+    event.preventDefault();
+  }
+}
+
+function showMenu() {
+  document.querySelector("body").classList.toggle("show-nav");
+}
+
+function videoSwitch(event) {
+  const iFrame = document.querySelector("iframe");
+  const videoLinks = document.querySelectorAll(".content-video a");
+  videoLinks.forEach((videoLink) => videoLink.classList.remove("active"));
+  event.target.classList.add("active");
+  const videoToPlay = event.target.getAttribute("href");
+  iFrame.setAttribute("src", videoToPlay);
+}
+
+function runCarousel(event) {
+  const imageHref = event.target.parentNode.getAttribute("href");
+  const titleText = event.target.title;
+  // document.querySelector("figure img").setAttribute("src", imageHref);
+  document.querySelector("figure img").src = imageHref;
+  document.querySelector("figcaption").innerHTML = titleText;
 }
