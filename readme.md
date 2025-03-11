@@ -224,11 +224,11 @@ Add the first component to `layout.html` after the nav include, e.g.:
 {% include "components/header.html" %}
 ```
 
-Add header CSS to `styles.scss`:
+Add header CSS to `styles.css`:
 
 ```css
 header {
-  width > 980px;
+  max-width: 980px;
   margin: 0 auto;
   padding-top: 2rem;
   h1 {
@@ -270,16 +270,16 @@ Because we are nesting we can simply write:
 
 ```css
 p {
-  /* ...  */
+  /* omitted for brevity */
   @media (width < 780px) {
     display: none;
   }
 }
 ```
 
-Note: this is _not_ a mobile first design pattern. It uses `width >` to add display attributes to small screens.
+Note: this is _not_ a mobile first design pattern. It uses `width <` to add display attributes to small screens.
 
-Change it to use a `width <` mobile first design pattern:
+Change it to use a `width >` mobile first design pattern:
 
 ```css
 p {
@@ -337,7 +337,7 @@ Add a link `<a href="#" id="pull"></a>` to the nav:
 <nav>
   <a href="#" id="pull"></a>
   <ul>
-    ...
+    <!-- omitted for brevity -->
   </ul>
 </nav>
 ```
@@ -360,12 +360,12 @@ Small screen first - show and format the hamburger menu:
   background: url(../img/nav-icon.png) no-repeat;
   width: 22px;
   height: 22px;
-  background-size: cover;
+  /* background-size: cover; */
   display: inline-block;
 }
 ```
 
-Format the ul for the small screen:
+Format the ul for the small screen by editing the existing CSS:
 
 ```css
 nav ul {
@@ -382,9 +382,6 @@ nav a {
   display: inline-block;
   width: 100%;
   box-sizing: border-box;
-  &:hover {
-    text-decoration: none;
-  }
 }
 
 nav li:hover:not(.active) {
@@ -522,7 +519,7 @@ Note: if we were making a single page app (SPA) we would have to code the menu t
 
 ## Create Posts
 
-Create a new posts folder in src.
+Create a new `posts` folder in src.
 
 Create two posts.
 
@@ -572,6 +569,8 @@ Create `posts/posts.json`:
 ```
 
 Use the content on the existing blog page.
+
+You should restart the application in order to see the posts.
 
 `blog.md`:
 
