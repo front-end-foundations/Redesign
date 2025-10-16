@@ -34,6 +34,7 @@ Some examples include:
 Data is stored indefinitely, and it must be a string.
 
 ```js
+localStorage; // length: 0
 var value = "data that I want to store permanently";
 localStorage.setItem("test", value); // set the item
 localStorage.getItem("test"); // retrieve the item
@@ -50,6 +51,8 @@ sessionStorage.setItem("myTempDataKey", value);
 sessionStorage.getItem("myTempDataKey");
 sessionStorage.removeItem("myTempDatakey");
 ```
+
+In order to store JavaScript data structures such as object you must convert them to json using `JSON.stringify()` and use `JSON.parse()` on the other end to convert it back into an object.
 
 Browsers provide differing levels of storage space for localStorage and sessionStorage, averaging around 5mb.
 
